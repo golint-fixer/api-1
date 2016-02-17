@@ -1,0 +1,4 @@
+# File ignores.
+goapi # Go builds this package by this name, and I don't want to commit it to VCS.
+
+# Directory ignores.
