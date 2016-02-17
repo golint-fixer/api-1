@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/thedodd/goapi/elasticsearch"
+	"github.com/thedodd/buildAPI/elasticsearch"
 )
 
 func main() {
