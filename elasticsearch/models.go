@@ -14,6 +14,7 @@ func init() {
 // BuildModel the Elasticsearch build model.
 type BuildModel struct {
 	ID             bson.ObjectId `json:"id" bson:"_id"`
+	User           string        `json:"user" bson:"user"`
 	NumClientNodes int           `json:"num_client_nodes" bson:"num_client_nodes"`
 	NumDataNodes   int           `json:"num_data_nodes" bson:"num_data_nodes"`
 	NumMasterNodes int           `json:"num_master_nodes" bson:"num_master_nodes"`

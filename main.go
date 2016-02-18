@@ -7,14 +7,19 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
+	"github.com/thedodd/buildAPI/common"
 	"github.com/thedodd/buildAPI/elasticsearch"
 )
 
 func main() {
 	router := gin.Default()
 
+	// V1 of the API.
+	v1 := router.Group("")
+	v1.Use(common.BasicAuthRequired)
+
 	// Register Elasticsearch builds resource handlers.
-	elasticsearchBuilds := router.Group("/elasticsearch/builds")
+	elasticsearchBuilds := v1.Group("/elasticsearch/builds")
 	{
 		elasticsearchBuilds.GET("/", elasticsearch.GetElasticsearchBuilds)
 		elasticsearchBuilds.POST("/", elasticsearch.CreateElasticsearchBuild)

@@ -11,7 +11,8 @@ import (
 // GetElasticsearchBuilds get a list of all Elasticsearch builds.
 func GetElasticsearchBuilds(context *gin.Context) {
 	var builds []BuildModel
-	(&BuildModel{}).Collection().Find(bson.M{}).All(&builds)
+	user := context.MustGet("id").(string)
+	(&BuildModel{}).Collection().Find(bson.M{"user": user}).All(&builds)
 
 	// If slice is nil, return empty slice.
 	if builds == nil {
@@ -25,10 +26,12 @@ func CreateElasticsearchBuild(context *gin.Context) {
 	// TODO(TheDodd): these params need to come from POST body.
 	build := &BuildModel{
 		ID:             bson.NewObjectId(),
+		User:           context.MustGet("id").(string),
 		NumClientNodes: 5,
 		NumDataNodes:   5,
 		NumMasterNodes: 3,
 	}
+	// TODO(TheDodd): handle potential errors here.
 	build.Collection().Insert(build)
 	context.JSON(http.StatusOK, gin.H{"data": build})
 }
@@ -39,12 +42,17 @@ func GetElasticsearchBuildByID(context *gin.Context) {
 	id, err := common.GetObjectID(rawID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid build ID specified."})
+		context.Abort()
+		return
 	}
 
 	build := &BuildModel{}
-	err = build.Collection().FindId(id).One(build)
+	user := context.MustGet("id").(string)
+	err = build.Collection().Find(bson.M{"_id": id, "user": user}).One(build)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Build not found."})
+		context.Abort()
+		return
 	}
 	context.JSON(http.StatusOK, gin.H{"data": build})
 }
