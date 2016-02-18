@@ -1,3 +1,5 @@
 package: github.com/thedodd/buildAPI
 import:
 - package: github.com/gorilla/mux
+- package: github.com/kelseyhightower/envconfig
+- package: gopkg.in/mgo.v2

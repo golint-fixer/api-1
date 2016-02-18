@@ -1,8 +1,17 @@
-hash: 793ec103dd75138e8adfc5d922538b858da62e5b74841769b0c9ec20257b759b
-updated: 2016-02-17T11:18:06.730003527-08:00
+hash: 265ec7a3d9951d0d1ee26bb5e84f36881a90d1b58f9aa5f70a910b3f77e8e1f5
+updated: 2016-02-17T22:34:28.29446092-08:00
 imports:
 - name: github.com/gorilla/context
   version: 1c83b3eabd45b6d76072b66b746c20815fb2872d
 - name: github.com/gorilla/mux
   version: 26a6070f849969ba72b72256e9f14cf519751690
+- name: github.com/kelseyhightower/envconfig
+  version: 12c18e8343f6eb5fc3a9d5c8dc353e42e6bb40b9
+- name: gopkg.in/mgo.v2
+  version: d90005c5262a3463800497ea5a89aed5fe22c886
+  subpackages:
+  - bson
+  - internal/scram
+- name: gopkg.in/tomb.v2
+  version: 14b3d72120e8d10ea6e6b7f87f7175734b1faab8
 devImports: []

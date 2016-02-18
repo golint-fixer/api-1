@@ -1,0 +1,19 @@
+version: '2'
+services:
+  buildapi:
+    build: .
+    command: go run main.go
+    env_file: .env
+    environment:
+      - BACKEND_URL=db:27017
+    links:
+      - buildapi.mongodb:db
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/go/src/github.com/thedodd/buildAPI # Allow for source to be linked to repo.
+
+  buildapi.mongodb:
+    image: "mongo:3.2"
+    ports:
+      - "27017:27017"
