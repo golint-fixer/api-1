@@ -1,12 +1,30 @@
-hash: 265ec7a3d9951d0d1ee26bb5e84f36881a90d1b58f9aa5f70a910b3f77e8e1f5
-updated: 2016-02-17T22:34:28.29446092-08:00
+hash: 74b6031137f1e2dda0e1e76a782af599e4f8937ffc787fbeac34684bd20b2b3e
+updated: 2016-02-18T11:14:34.310134776-08:00
 imports:
-- name: github.com/gorilla/context
-  version: 1c83b3eabd45b6d76072b66b746c20815fb2872d
-- name: github.com/gorilla/mux
-  version: 26a6070f849969ba72b72256e9f14cf519751690
+- name: github.com/dustin/go-broadcast
+  version: 3bdf6d4a7164a50bc19d5f230e2981d87d2584f1
+- name: github.com/gin-gonic/gin
+  version: 2498240ff0b2c17a4b977c611adb89ff4cad76d3
+  subpackages:
+  - binding
+  - render
+- name: github.com/golang/protobuf
+  version: 2402d76f3d41f928c7902a765dfc872356dd3aad
+  subpackages:
+  - proto
+  - proto/testdata
 - name: github.com/kelseyhightower/envconfig
   version: 12c18e8343f6eb5fc3a9d5c8dc353e42e6bb40b9
+- name: github.com/manucorporat/sse
+  version: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
+- name: github.com/manucorporat/stats
+  version: 8f2d6ace262eba462e9beb552382c98be51d807b
+- name: golang.org/x/net
+  version: f315505cf3349909cdf013ea56690da34e96a451
+  subpackages:
+  - context
+- name: gopkg.in/go-playground/validator.v8
+  version: c193cecd124b5cc722d7ee5538e945bdb3348435
 - name: gopkg.in/mgo.v2
   version: d90005c5262a3463800497ea5a89aed5fe22c886
   subpackages:

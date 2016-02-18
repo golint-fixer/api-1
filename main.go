@@ -5,22 +5,19 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 
 	"github.com/thedodd/buildAPI/elasticsearch"
 )
 
 func main() {
-	mux := mux.NewRouter()
+	router := gin.Default()
 
-	mux.Handle("/elasticsearch/builds/", &elasticsearch.BuildsListResource{})
-	mux.Handle("/elasticsearch/builds/{buildID}", &elasticsearch.BuildsDetailResource{})
+	// Register Elasticsearch builds resource handlers.
+	router.GET("/elasticsearch/builds/", elasticsearch.GetElasticsearchBuilds)
+	router.POST("/elasticsearch/builds/", elasticsearch.CreateElasticsearchBuild)
+	router.GET("/elasticsearch/builds/:id", elasticsearch.GetElasticsearchBuildByID)
 
-	port := 3000
-	log.Printf("API listening at 0.0.0.0:%d.", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), mux))
+	// Fire this bad boy up.
+	router.Run("0.0.0.0:3000")
 }

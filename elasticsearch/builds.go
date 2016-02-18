@@ -1,47 +1,28 @@
 package elasticsearch
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
+	"github.com/thedodd/buildAPI/common"
 	"gopkg.in/mgo.v2/bson"
 )
 
-// BuildsListResource a request handler Elasticsearch builds.
-type BuildsListResource struct{}
-
-func (resource *BuildsListResource) ServeHTTP(response http.ResponseWriter, request *http.Request) {
-	switch request.Method {
-	case "GET":
-		resource.get(response, request)
-		break
-
-	case "POST":
-		resource.post(response, request)
-		break
-
-	default:
-		http.NotFound(response, request)
-	}
-}
-
-func (resource *BuildsListResource) get(response http.ResponseWriter, request *http.Request) {
-	log.Println("GET /elasticsearch/builds/ 200")
+// GetElasticsearchBuilds get a list of all Elasticsearch builds.
+func GetElasticsearchBuilds(context *gin.Context) {
 	var builds []BuildModel
 	(&BuildModel{}).Collection().Find(bson.M{}).All(&builds)
 
+	// If slice is nil, return empty slice.
 	if builds == nil {
-		response.Write([]byte(`{"data": []}`))
-	} else {
-		data, _ := json.Marshal(bson.M{"data": builds})
-		response.Write(data)
+		builds = make([]BuildModel, 0)
 	}
+	context.JSON(http.StatusOK, gin.H{"data": builds})
 }
 
-func (resource *BuildsListResource) post(response http.ResponseWriter, request *http.Request) {
-	log.Println("POST /elasticsearch/builds/ 200")
+// CreateElasticsearchBuild create a new Elasticsearch build.
+func CreateElasticsearchBuild(context *gin.Context) {
+	// TODO(TheDodd): these params need to come from POST body.
 	build := &BuildModel{
 		ID:             bson.NewObjectId(),
 		NumClientNodes: 5,
@@ -49,25 +30,21 @@ func (resource *BuildsListResource) post(response http.ResponseWriter, request *
 		NumMasterNodes: 3,
 	}
 	build.Collection().Insert(build)
-	data, _ := json.Marshal(build)
-	response.Write(data)
+	context.JSON(http.StatusOK, gin.H{"data": build})
 }
 
-// BuildsDetailResource a request handler Elasticsearch build details.
-type BuildsDetailResource struct{}
-
-func (resource *BuildsDetailResource) ServeHTTP(response http.ResponseWriter, request *http.Request) {
-	switch request.Method {
-	case "GET":
-		resource.get(response, request)
-		break
-
-	default:
-		http.NotFound(response, request)
+// GetElasticsearchBuildByID get an Elasticsearch build by ID.
+func GetElasticsearchBuildByID(context *gin.Context) {
+	rawID := context.Param("id")
+	id, err := common.GetObjectID(rawID)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid build ID specified."})
 	}
-}
 
-func (resource *BuildsDetailResource) get(response http.ResponseWriter, request *http.Request) {
-	vars := mux.Vars(request)
-	log.Printf("GET /elasticsearch/builds/%s 200", vars["buildID"])
+	build := &BuildModel{}
+	err = build.Collection().FindId(id).One(build)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Build not found."})
+	}
+	context.JSON(http.StatusOK, gin.H{"data": build})
 }
