@@ -9,6 +9,7 @@ ENV GO15VENDOREXPERIMENT=1
 WORKDIR /go/src/github.com/thedodd/buildAPI
 COPY ./main.go main.go
 COPY ./elasticsearch elasticsearch
+COPY ./common common
 COPY ./glide.yaml glide.yaml
 COPY ./glide.lock glide.lock
 
@@ -17,6 +18,9 @@ RUN go get github.com/Masterminds/glide
 
 # Build our API.
 RUN glide install && go install github.com/thedodd/buildAPI
+
+# Build gin for hot reload.
+RUN go get github.com/codegangsta/gin
 
 EXPOSE 3000
 

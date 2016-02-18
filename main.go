@@ -14,9 +14,12 @@ func main() {
 	router := gin.Default()
 
 	// Register Elasticsearch builds resource handlers.
-	router.GET("/elasticsearch/builds/", elasticsearch.GetElasticsearchBuilds)
-	router.POST("/elasticsearch/builds/", elasticsearch.CreateElasticsearchBuild)
-	router.GET("/elasticsearch/builds/:id", elasticsearch.GetElasticsearchBuildByID)
+	elasticsearchBuilds := router.Group("/elasticsearch/builds")
+	{
+		elasticsearchBuilds.GET("/", elasticsearch.GetElasticsearchBuilds)
+		elasticsearchBuilds.POST("/", elasticsearch.CreateElasticsearchBuild)
+		elasticsearchBuilds.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
+	}
 
 	// Fire this bad boy up.
 	router.Run("0.0.0.0:3000")

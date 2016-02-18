@@ -1,5 +1,6 @@
 # File ignores.
-goapi # Go builds this package by this name, and I don't want to commit it to VCS.
+buildAPI # Go builds this package by this name.
+gin-bin # Gin builds this for hot reloading.
 
 # Directory ignores.
 vendor

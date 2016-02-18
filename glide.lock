@@ -1,6 +1,16 @@
-hash: 74b6031137f1e2dda0e1e76a782af599e4f8937ffc787fbeac34684bd20b2b3e
-updated: 2016-02-18T11:14:34.310134776-08:00
+hash: 5c3df9a34c03948df138235240f077fe6a74992eb6b6d9696ea0e1943617cdcb
+updated: 2016-02-18T11:37:23.132036867-08:00
 imports:
+- name: github.com/codegangsta/cli
+  version: 5db74198dee1cfe60cf06a611d03a420361baad6
+- name: github.com/codegangsta/envy
+  version: 4b78388c8ce4fa412440ca4eaa654e2fdd752e49
+  subpackages:
+  - lib
+- name: github.com/codegangsta/gin
+  version: 20c9707f2046c2a1019cea9659931731cf15a7dd
+  subpackages:
+  - lib
 - name: github.com/dustin/go-broadcast
   version: 3bdf6d4a7164a50bc19d5f230e2981d87d2584f1
 - name: github.com/gin-gonic/gin

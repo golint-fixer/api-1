@@ -2,14 +2,14 @@ version: '2'
 services:
   buildapi:
     build: .
-    command: go run main.go
+    command: gin --port 8080 --appPort 3000 run
     env_file: .env
     environment:
       - BACKEND_URL=db:27017
     links:
       - buildapi.mongodb:db
     ports:
-      - 3000:3000
+      - 8080:8080
     volumes:
       - .:/go/src/github.com/thedodd/buildAPI # Allow for source to be linked to repo.
 
