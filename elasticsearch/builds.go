@@ -23,14 +23,10 @@ func GetElasticsearchBuilds(context *gin.Context) {
 
 // CreateElasticsearchBuild create a new Elasticsearch build.
 func CreateElasticsearchBuild(context *gin.Context) {
-	// TODO(TheDodd): these params need to come from POST body.
-	build := &BuildModel{
-		ID:             bson.NewObjectId(),
-		User:           context.MustGet("id").(string),
-		NumClientNodes: 5,
-		NumDataNodes:   5,
-		NumMasterNodes: 3,
-	}
+	build := context.MustGet("data").(*BuildModel)
+	build.ID = bson.NewObjectId()
+	build.User = context.MustGet("id").(string)
+
 	// TODO(TheDodd): handle potential errors here.
 	build.Collection().Insert(build)
 	context.JSON(http.StatusOK, gin.H{"data": build})

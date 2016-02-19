@@ -23,7 +23,7 @@ func main() {
 	elasticsearchBuilds := v1.Group("/elasticsearch/builds")
 	{
 		elasticsearchBuilds.GET("/", elasticsearch.GetElasticsearchBuilds)
-		elasticsearchBuilds.POST("/", elasticsearch.CreateElasticsearchBuild)
+		elasticsearchBuilds.POST("/", common.ValidateInboundJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
 		elasticsearchBuilds.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
 	}
 

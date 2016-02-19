@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
+	"gopkg.in/go-playground/validator.v8"
 )
 
 // BasicAuthRequired enforce basic auth on resources.
@@ -18,7 +19,7 @@ func BasicAuthRequired(context *gin.Context) {
 	}
 
 	// TODO(TheDodd): build out a real authN/Z system here.
-	log.Println(username, password)
+	log.Println("DELETE THIS LOG STATEMENT", username, password)
 	context.Set("username", username)
 	context.Set("id", username)
 
@@ -37,4 +38,22 @@ func RequestID(context *gin.Context) {
 
 	// Yield to other middleware handlers.
 	context.Next()
+}
+
+// ValidateInboundJSON validate any inbound JSON against the given model pointer.
+func ValidateInboundJSON(model ModelInterface) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		if err := context.BindJSON(model); err != nil {
+			validationErrors := err.(validator.ValidationErrors) // Will always be this type.
+			model.HandleValidationErrors(context, validationErrors)
+			context.Abort()
+			return
+		}
+
+		// Bind validated model pointer to request context.
+		context.Set("data", model)
+
+		// Yield to other middleware handlers.
+		context.Next()
+	}
 }
