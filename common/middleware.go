@@ -1,6 +1,7 @@
 package common
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -44,8 +45,14 @@ func RequestID(context *gin.Context) {
 func ValidateInboundJSON(model ModelInterface) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		if err := context.BindJSON(model); err != nil {
-			validationErrors := err.(validator.ValidationErrors) // Will always be this type.
-			model.HandleValidationErrors(context, validationErrors)
+			switch eType := err.(type) {
+			case validator.ValidationErrors:
+				model.HandleValidationErrors(context, eType)
+
+			case *json.UnmarshalTypeError:
+				SerializeInboundTypeErrors(context, eType)
+			}
+
 			context.Abort()
 			return
 		}
