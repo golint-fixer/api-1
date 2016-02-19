@@ -16,6 +16,7 @@ func main() {
 
 	// V1 of the API.
 	v1 := router.Group("")
+	v1.Use(common.RequestID)
 	v1.Use(common.BasicAuthRequired)
 
 	// Register Elasticsearch builds resource handlers.

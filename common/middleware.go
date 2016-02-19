@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/satori/go.uuid"
 )
 
 // BasicAuthRequired enforce basic auth on resources.
@@ -21,7 +22,19 @@ func BasicAuthRequired(context *gin.Context) {
 	context.Set("username", username)
 	context.Set("id", username)
 
-	// Before request.
+	// Yield to other middleware handlers.
 	context.Next()
-	// After request.
+}
+
+// RequestID tag the current request with an ID & add a response X-Request-Id header.
+func RequestID(context *gin.Context) {
+	// Generate an ID for this request.
+	id := uuid.NewV4().String()
+
+	// Bind request ID to context.
+	context.Set("request_id", id)
+	context.Writer.Header().Set("X-Request-ID", id)
+
+	// Yield to other middleware handlers.
+	context.Next()
 }
