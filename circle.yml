@@ -1,21 +1,16 @@
 machine:
   environment:
-    IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-    GO15VENDOREXPERIMENT: 1
+    GOPATH: "$GOPATH:$HOME"
 
 dependencies:
-  pre:
+  override:
     - go get github.com/Masterminds/glide
     - glide install
     - go install github.com/thedodd/buildAPI
 
-  override:
-    - mkdir -p "$GOPATH/src/$IMPORT_PATH"
-    - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
-
 test:
   pre:
-    - go vet $IMPORT_PATH
+    - go vet
 
   override:
-    - go test $IMPORT_PATH
+    - go test
