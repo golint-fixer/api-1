@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/TheDodd/buildAPI/badges/gpa.svg)](https://codeclimate.com/github/TheDodd/buildAPI)
+
 build api
 =========
 Just a build API.
