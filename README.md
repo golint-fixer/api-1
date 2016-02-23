@@ -1,3 +1,4 @@
+[![Circle CI](https://circleci.com/gh/TheDodd/buildAPI.svg?style=svg)](https://circleci.com/gh/TheDodd/buildAPI)
 [![Code Climate](https://codeclimate.com/github/TheDodd/buildAPI/badges/gpa.svg)](https://codeclimate.com/github/TheDodd/buildAPI)
 
 build api
