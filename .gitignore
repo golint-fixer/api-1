@@ -1,6 +1,6 @@
 # File ignores.
 buildAPI # Go builds this package by this name.
-gin-bin # Gin builds this for hot reloading.
 
 # Directory ignores.
 vendor
+build

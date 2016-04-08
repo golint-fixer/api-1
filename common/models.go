@@ -1,8 +1,7 @@
 package common
 
 import (
-	"encoding/json"
-	"net/http"
+	"fmt"
 	"reflect"
 
 	"github.com/gin-gonic/gin"
@@ -22,26 +21,14 @@ func SerializeValidationErrors(model ModelInterface, errors validator.Validation
 	for _, fieldError := range errors {
 		reflectField, _ := reflectTypeElem.FieldByName(fieldError.Field)
 		jsonFieldName := reflectField.Tag.Get("json")
-		validators := reflectField.Tag.Get("binding")
+		validators := reflectField.Tag.Get("validate")
 		err := map[string]string{
 			"field":      jsonFieldName,
-			"type":       fieldError.Type.Name(), // Name of type as string.
-			"error":      fieldError.Tag,
+			"error":      "Error encountered during validation.",
+			"message":    fmt.Sprintf("Validation failed for validator '%s'.", fieldError.Tag),
 			"validators": validators,
 		}
 		collector = append(collector, err)
 	}
 	return collector
-}
-
-// SerializeInboundTypeErrors serialize error related to inbound type mismatch.
-func SerializeInboundTypeErrors(context *gin.Context, typeError *json.UnmarshalTypeError) {
-	collector := []map[string]string{
-		map[string]string{
-			"error":        "Incorrect data type provided.",
-			"expectedType": typeError.Type.Name(),
-			"givenType":    typeError.Value,
-		},
-	}
-	context.JSON(http.StatusBadRequest, gin.H{"errors": collector, "numErrors": 1})
 }

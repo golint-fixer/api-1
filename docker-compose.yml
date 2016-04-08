@@ -2,7 +2,7 @@ version: '2'
 services:
   buildapi:
     build: .
-    command: gin --port 8080 --appPort 3000 run
+    command: gin --port 8080 --appPort 3000 --bin build/buildAPI run
     env_file: .env
     environment:
       - BACKEND_URL=db:27017
