@@ -1,5 +1,5 @@
-hash: a7fd1ecfb3739835037b6925c83bb6aa96f15c1e3ba78f2ba31a8f296e26d4ad
-updated: 2016-02-18T13:16:01.415487054-08:00
+hash: 16e93984d3e78e96460a688c1f1c7d794fbad9a8892cf1d5429f38a1b0619957
+updated: 2016-04-08T14:22:42.15442283-05:00
 imports:
 - name: github.com/codegangsta/cli
   version: 5db74198dee1cfe60cf06a611d03a420361baad6
@@ -14,7 +14,7 @@ imports:
 - name: github.com/dustin/go-broadcast
   version: 3bdf6d4a7164a50bc19d5f230e2981d87d2584f1
 - name: github.com/gin-gonic/gin
-  version: 2498240ff0b2c17a4b977c611adb89ff4cad76d3
+  version: 233291e4e2d016084f9e42e786e45dad8858ace4
   subpackages:
   - binding
   - render
@@ -29,8 +29,10 @@ imports:
   version: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
 - name: github.com/manucorporat/stats
   version: 8f2d6ace262eba462e9beb552382c98be51d807b
+- name: github.com/mitchellh/mapstructure
+  version: d2dd0262208475919e1a362f675cfc0e7c10e905
 - name: github.com/satori/go.uuid
-  version: d41af8bb6a7704f00bc3b7cba9355ae6a5a80048
+  version: f9ab0dce87d815821e221626b772e3475a0d2749
 - name: golang.org/x/net
   version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:
