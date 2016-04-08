@@ -1,20 +1,15 @@
 [![Circle CI](https://circleci.com/gh/TheDodd/buildAPI.svg?style=svg)](https://circleci.com/gh/TheDodd/buildAPI)
 [![Code Climate](https://codeclimate.com/github/TheDodd/buildAPI/badges/gpa.svg)](https://codeclimate.com/github/TheDodd/buildAPI)
 
-build api
-=========
-Just a build API.
+api
+===
+Just a Golang API to hack on.
 
-### go
-To get this API up and running, execute the following to make sure you have all needed deps:
-
-```bash
-go get github.com/Masterminds/glide # Get the glide dep management tool.
-glide install # Install our API's deps.
-```
-
-Now just boot the API for development:
+### development
+Docker is used for all aspects of this projects development and deployment. It is assumed that you have a docker daemon available to work with. To get this API up and running, simply execute the following:
 
 ```bash
-go run main.go
+docker-compose up -d
 ```
+
+Now you can interface with the API at port `8080` on your docker daemon's host.
