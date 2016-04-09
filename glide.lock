@@ -1,10 +1,10 @@
 hash: 644788c624e25e43073b868d10f60fb6d50bece3db1c4313aa01fdc0ac52a3da
-updated: 2016-04-08T22:58:30.223439705-05:00
+updated: 2016-04-09T15:05:09.426642843-05:00
 imports:
 - name: github.com/dustin/go-broadcast
   version: 3bdf6d4a7164a50bc19d5f230e2981d87d2584f1
 - name: github.com/gin-gonic/gin
-  version: 233291e4e2d016084f9e42e786e45dad8858ace4
+  version: 72ffff6e442e76b3109322d71a2b64a1ba0fcf74
   subpackages:
   - binding
   - render

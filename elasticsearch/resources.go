@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/thedodd/api/common"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -27,9 +28,12 @@ func CreateElasticsearchBuild(context *gin.Context) {
 	build.ID = bson.NewObjectId()
 	build.User = context.MustGet("id").(string)
 
-	// TODO(TheDodd): handle potential errors here.
-	build.Collection().Insert(build)
-	context.JSON(http.StatusOK, gin.H{"data": build})
+	if err := build.Collection().Insert(build); err != nil {
+		abortCode, dbError := common.SerializeDBErrors(err.(*mgo.LastError))
+		context.JSON(abortCode, gin.H{"errors": dbError})
+	} else {
+		context.JSON(http.StatusOK, gin.H{"data": build})
+	}
 }
 
 // GetElasticsearchBuildByID get an Elasticsearch build by ID.
