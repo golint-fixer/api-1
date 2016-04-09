@@ -14,6 +14,10 @@ import (
 
 var indexOnce sync.Once
 
+func init() {
+	(&BuildModel{}).EnsureIndices()
+}
+
 // BuildModel - the Elasticsearch build model.
 type BuildModel struct {
 	ID             bson.ObjectId `json:"id" bson:"_id" validate:"-"`
@@ -34,7 +38,6 @@ func (model *BuildModel) EnsureIndices() {
 
 // Collection - get the collection for this data model.
 func (model *BuildModel) Collection() *mgo.Collection {
-	model.EnsureIndices()
 	db := common.GetDatabase()
 	return db.C("elasticsearchBuilds")
 }
