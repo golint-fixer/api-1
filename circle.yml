@@ -6,7 +6,7 @@ dependencies:
   override:
     - go get github.com/Masterminds/glide
     - glide install
-    - go install github.com/thedodd/buildAPI
+    - go install .
 
 test:
   pre:
