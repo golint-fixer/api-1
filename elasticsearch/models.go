@@ -2,6 +2,7 @@ package elasticsearch
 
 import (
 	"net/http"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v8"
@@ -11,9 +12,7 @@ import (
 	"github.com/thedodd/api/common"
 )
 
-func init() {
-	(&BuildModel{}).EnsureIndices()
-}
+var indexOnce sync.Once
 
 // BuildModel - the Elasticsearch build model.
 type BuildModel struct {
@@ -26,13 +25,16 @@ type BuildModel struct {
 
 // EnsureIndices - ensure any indices needed for this model's collection are in place.
 func (model *BuildModel) EnsureIndices() {
-	model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numClientNodes"}})
-	model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numDataNodes"}})
-	model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numMasterNodes"}})
+	indexOnce.Do(func() {
+		model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numClientNodes"}})
+		model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numDataNodes"}})
+		model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numMasterNodes"}})
+	})
 }
 
 // Collection - get the collection for this data model.
 func (model *BuildModel) Collection() *mgo.Collection {
+	model.EnsureIndices()
 	db := common.GetDatabase()
 	return db.C("elasticsearchBuilds")
 }
