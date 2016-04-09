@@ -1,4 +1,4 @@
-package: github.com/thedodd/buildAPI
+package: github.com/thedodd/api
 import:
 - package: github.com/kelseyhightower/envconfig
 - package: gopkg.in/mgo.v2

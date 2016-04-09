@@ -1,14 +1,10 @@
-/**
- * Just a build API.
- */
-
 package main
 
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/thedodd/buildAPI/common"
-	"github.com/thedodd/buildAPI/elasticsearch"
+	"github.com/thedodd/api/common"
+	"github.com/thedodd/api/elasticsearch"
 )
 
 func main() {
