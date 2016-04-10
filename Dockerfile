@@ -10,13 +10,9 @@ RUN apk update && apk add git
 RUN go get github.com/Masterminds/glide
 RUN go get github.com/codegangsta/gin
 
-# Copy over needed files.
+# Copy over needed files. Filter with .dockerignore.
 WORKDIR /go/src/github.com/thedodd/api
-COPY ./main.go main.go
-COPY ./elasticsearch elasticsearch
-COPY ./common common
-COPY ./glide.yaml glide.yaml
-COPY ./glide.lock glide.lock
+COPY . .
 
 # Build our API.
 RUN glide install && go install .

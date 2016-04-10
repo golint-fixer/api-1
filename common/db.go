@@ -1,9 +1,12 @@
 package common
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
+	"net"
 	"sync"
+	"time"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -12,20 +15,6 @@ import (
 // DB access concurrency control symbols.
 var apiSession *mgo.Session
 var dbSync sync.Once
-
-// Dial a MongoDB connection for this API.
-func dialSession() *mgo.Session {
-	config := GetConfig()
-	connectionString := fmt.Sprintf("%s/%s", config.BackendURL, config.BackendDBName)
-	session, err := mgo.Dial(connectionString)
-	if err != nil {
-		panic(err)
-	}
-
-	// Ensure we are operating in strong mode.
-	session.SetMode(mgo.Strong, true)
-	return session
-}
 
 // GetDatabase get a handle to this API's MongoDB database.
 func GetDatabase() *mgo.Database {
@@ -67,4 +56,39 @@ func SerializeDBErrors(err *mgo.LastError) (abortCode int, dbError map[string]in
 		dbError["dbError"] = err.Code
 	}
 	return abortCode, dbError
+}
+
+//////////////////////
+// Private symbols. //
+//////////////////////
+func dialSession() *mgo.Session {
+	config := GetConfig()
+	var session *mgo.Session
+	var err error
+
+	// Establish a session according to API mode.
+	if config.Mode == "prod" {
+		dialInfo := &mgo.DialInfo{
+			Addrs:    []string{config.BackendURL},
+			Database: config.BackendDBName,
+			Username: config.BackendUsername,
+			Password: config.BackendPassword,
+			DialServer: func(addr *mgo.ServerAddr) (net.Conn, error) {
+				return tls.Dial("tcp", addr.String(), &tls.Config{})
+			},
+			Timeout: time.Second * 10,
+		}
+		session, err = mgo.DialWithInfo(dialInfo)
+	} else {
+		connectionString := fmt.Sprintf("%s/%s", config.BackendURL, config.BackendDBName)
+		session, err = mgo.Dial(connectionString)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	// Ensure we are operating in strong mode.
+	session.SetMode(mgo.Strong, true)
+	return session
 }
