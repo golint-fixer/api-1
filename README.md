@@ -9,7 +9,8 @@ Just a Golang API to hack on.
 Docker is used for all aspects of this projects development and deployment. It is assumed that you have a docker daemon available to work with. To get this API up and running, simply execute the following:
 
 ```bash
-docker-compose up -d
+# Stand up services & tail container logs.
+docker-compose up -d && docker-compose logs
 ```
 
 Now you can interface with the API at port `8080` on your docker daemon's host.
