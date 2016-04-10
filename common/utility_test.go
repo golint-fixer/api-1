@@ -6,13 +6,41 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func TestUtilityHashPassword(t *testing.T) {
-	plainTextPassword := "testpass"
+/////////////////////
+// Tests for Hash. //
+/////////////////////
+func TestHash(t *testing.T) {
+	plainText := "plain-text-password"
 
-	output := HashPassword(plainTextPassword)
+	output := Hash(plainText)
 
-	// Ensure relationship between password and hash can be computed.
-	if bcrypt.CompareHashAndPassword([]byte(output), []byte(plainTextPassword)) != nil {
+	// Ensure relationship between plain text and hash can be computed.
+	if bcrypt.CompareHashAndPassword([]byte(output), []byte(plainText)) != nil {
+		t.Fail()
+	}
+}
+
+//////////////////////////
+// Tests for CheckHash. //
+//////////////////////////
+func TestCheckHashReturnsTrueWhenTrue(t *testing.T) {
+	plainText := "plain-text-password"
+	hash := Hash(plainText)
+
+	output := CheckHash(hash, plainText) // Should be true.
+
+	if output != true {
+		t.Fail()
+	}
+}
+
+func TestCheckHashReturnsFalseWhenFalse(t *testing.T) {
+	plainText := "plain-text-password"
+	hash := Hash("some-other-string")
+
+	output := CheckHash(hash, plainText) // Should be false.
+
+	if output != false {
 		t.Fail()
 	}
 }

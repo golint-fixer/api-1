@@ -5,6 +5,7 @@ import (
 
 	"github.com/thedodd/api/common"
 	"github.com/thedodd/api/elasticsearch"
+	"github.com/thedodd/api/users"
 )
 
 func main() {
@@ -16,11 +17,17 @@ func main() {
 	v1.Use(common.BasicAuthRequired)
 
 	// Register Elasticsearch builds resource handlers.
-	elasticsearchBuilds := v1.Group("/elasticsearch/builds")
+	usersRouter := v1.Group("/users")
 	{
-		elasticsearchBuilds.GET("/", elasticsearch.GetElasticsearchBuilds)
-		elasticsearchBuilds.POST("/", common.ValidateInboundJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
-		elasticsearchBuilds.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
+		usersRouter.POST("/", common.ValidateInboundJSON(&users.User{}), users.CreateUser)
+	}
+
+	// Register Elasticsearch builds resource handlers.
+	esBuildsRouter := v1.Group("/elasticsearch/builds")
+	{
+		esBuildsRouter.GET("/", elasticsearch.GetElasticsearchBuilds)
+		esBuildsRouter.POST("/", common.ValidateInboundJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
+		esBuildsRouter.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
 	}
 
 	// Fire this bad boy up.

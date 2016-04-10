@@ -1,5 +1,6 @@
 machine:
   environment:
+    GO15VENDOREXPERIMENT: "1"
     GOPATH: "$GOPATH:$HOME"
 
 dependencies:
@@ -13,4 +14,5 @@ test:
     - go vet
 
   override:
-    - go test
+    # Run tests against all packages exlcuding enything under vendor dir.
+    - go test $(go list ./... | grep -v '/vendor/')

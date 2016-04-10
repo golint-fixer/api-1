@@ -18,12 +18,25 @@ func init() {
 	(&User{}).EnsureIndices()
 }
 
-// User - the User model.
+// BaseUser - the base User model. Should only contain fields acceptable for HTTP responses.
+type BaseUser struct {
+	ID       bson.ObjectId `json:"id" bson:"_id" validate:"-"`
+	Username string        `json:"username" bson:"username" validate:"required,min=2,max=255"`
+	Email    string        `json:"email" bson:"email" validate:"required,email"`
+}
+
+// User - the User model. Use User.BaseUser for HTTP responses.
 type User struct {
-	ID         bson.ObjectId `json:"id" bson:"_id" validate:"-"`
-	Username   string        `json:"username" bson:"username" validate:"required,min=2,max=255"`
-	Email      string        `json:"email" bson:"email" validate:"required,email"`
-	IsVerified bool          `json:"-" bson:"isVerified" validate:"-"`
+	BaseUser          `json:",squash" bson:",inline"`
+	IsVerified        bool   `json:"-" bson:"isVerified" validate:"-"`
+	Password          string `json:"password" bson:"passwordHash" validate:"required"`
+	VerificationToken string `json:"-" bson:"verificationToken" validate:"-"`
+}
+
+// Collection - get the collection for this data model.
+func (model *User) Collection() *mgo.Collection {
+	db := common.GetDatabase()
+	return db.C("users")
 }
 
 // EnsureIndices - ensure any indices needed for this model's collection are in place.
@@ -34,21 +47,8 @@ func (model *User) EnsureIndices() {
 	})
 }
 
-// Collection - get the collection for this data model.
-func (model *User) Collection() *mgo.Collection {
-	db := common.GetDatabase()
-	return db.C("users")
-}
-
 // HandleValidationErrors - handle validation errors related to this model.
 func (model *User) HandleValidationErrors(context *gin.Context, errors validator.ValidationErrors) {
 	errCollector := common.SerializeValidationErrors(model, errors)
 	context.JSON(http.StatusBadRequest, gin.H{"errors": errCollector, "numErrors": len(errors)})
-}
-
-// UserInbound - model for user creation.
-type UserInbound struct {
-	User              `json:",squash"`
-	Password          string `json:"password" bson:"passwordHash" validate:"required"`
-	VerificationToken string `json:"-" bson:"verificationToken" validate:"-"`
 }
