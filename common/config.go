@@ -9,9 +9,11 @@ import (
 
 // Config for this API.
 type Config struct {
-	BackendDBName string `required:"true" envconfig:"backend_db_name"`
-	BackendURL    string `required:"true" envconfig:"backend_url"`
-	Mode          string `required:"true" envconfig:"mode"`
+	BackendDBName   string `required:"true" envconfig:"backend_db_name"`
+	BackendPassword string `required:"true" envconfig:"backend_password"`
+	BackendURL      string `required:"true" envconfig:"backend_url"`
+	BackendUsername string `required:"true" envconfig:"backend_username"`
+	Mode            string `required:"true" envconfig:"mode"`
 }
 
 // Package private variables for config synchronization.
@@ -23,7 +25,7 @@ func GetConfig() *Config {
 	configSync.Do(func() {
 		// Extract config from environment.
 		config = &Config{}
-		if err := envconfig.Process("", config); err != nil {
+		if err := envconfig.Process("api", config); err != nil {
 			log.Fatalf("Error extracting environment config: %s", err.Error())
 			panic(err)
 		}
