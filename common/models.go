@@ -9,17 +9,19 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-// ModelInterface defines the interface for data models.
+// ModelInterface - the interface definition for data models.
 type ModelInterface interface {
+	// The collection of the model.
 	Collection() *mgo.Collection
 
+	// Ensure indices needed by the model are in place.
 	EnsureIndices()
 
 	// Build up and serialize a JSON response of errors, but do not call context.Abort yet.
 	HandleValidationErrors(*gin.Context, validator.ValidationErrors)
 }
 
-// SerializeValidationErrors default serialization for model validation errors.
+// SerializeValidationErrors returns a serialization of validation errors.
 func SerializeValidationErrors(model ModelInterface, errors validator.ValidationErrors) (collector []map[string]string) {
 	collector = make([]map[string]string, 0, len(errors))
 	reflectTypeElem := reflect.TypeOf(model).Elem()

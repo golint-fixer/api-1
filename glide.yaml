@@ -6,3 +6,6 @@ import:
 - package: github.com/satori/go.uuid
 - package: github.com/mitchellh/mapstructure
 - package: gopkg.in/go-playground/validator.v8
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt

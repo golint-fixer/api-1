@@ -1,20 +1,10 @@
-hash: 16e93984d3e78e96460a688c1f1c7d794fbad9a8892cf1d5429f38a1b0619957
-updated: 2016-04-08T14:22:42.15442283-05:00
+hash: 644788c624e25e43073b868d10f60fb6d50bece3db1c4313aa01fdc0ac52a3da
+updated: 2016-04-09T15:05:09.426642843-05:00
 imports:
-- name: github.com/codegangsta/cli
-  version: 5db74198dee1cfe60cf06a611d03a420361baad6
-- name: github.com/codegangsta/envy
-  version: 4b78388c8ce4fa412440ca4eaa654e2fdd752e49
-  subpackages:
-  - lib
-- name: github.com/codegangsta/gin
-  version: 20c9707f2046c2a1019cea9659931731cf15a7dd
-  subpackages:
-  - lib
 - name: github.com/dustin/go-broadcast
   version: 3bdf6d4a7164a50bc19d5f230e2981d87d2584f1
 - name: github.com/gin-gonic/gin
-  version: 233291e4e2d016084f9e42e786e45dad8858ace4
+  version: 72ffff6e442e76b3109322d71a2b64a1ba0fcf74
   subpackages:
   - binding
   - render
@@ -33,6 +23,19 @@ imports:
   version: d2dd0262208475919e1a362f675cfc0e7c10e905
 - name: github.com/satori/go.uuid
   version: f9ab0dce87d815821e221626b772e3475a0d2749
+- name: golang.org/x/crypto
+  version: 3fbbcd23f1cb824e69491a5930cfeff09b12f4d2
+  subpackages:
+  - bcrypt
+  - blowfish
+  - nacl/secretbox
+  - salsa20/salsa
+  - poly1305
+  - openpgp/armor
+  - openpgp/errors
+  - openpgp/packet
+  - openpgp/s2k
+  - pkcs12/internal/rc2
 - name: golang.org/x/net
   version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:
