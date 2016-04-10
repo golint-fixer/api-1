@@ -1,3 +1,4 @@
+// main - API entry point.
 package main
 
 import (
@@ -16,21 +17,16 @@ func main() {
 	v1.Use(common.RequestID)
 
 	// Register Elasticsearch builds resource handlers.
-	usersRouter := v1.Group("/users")
-	{
-		usersRouter.POST("/", common.ValidateInboundJSON(&users.User{}), users.CreateUser)
-	}
+	usersRouter := v1.Group("")
+	usersRouter.POST("/users/", common.ValidateInboundJSON(&users.User{}), users.CreateUser)
 
 	// Register Elasticsearch builds resource handlers.
+	// Protect these resources with basic auth.
 	esBuildsRouter := v1.Group("/elasticsearch/builds")
-	{
-		// Protect these resources with basic auth.
-		esBuildsRouter.Use(common.BasicAuthRequired)
-
-		esBuildsRouter.GET("/", elasticsearch.GetElasticsearchBuilds)
-		esBuildsRouter.POST("/", common.ValidateInboundJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
-		esBuildsRouter.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
-	}
+	esBuildsRouter.Use(common.BasicAuthRequired)
+	esBuildsRouter.GET("/", elasticsearch.GetElasticsearchBuilds)
+	esBuildsRouter.POST("/", common.ValidateInboundJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
+	esBuildsRouter.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
 
 	// Fire this bad boy up.
 	router.Run("0.0.0.0:3000")
