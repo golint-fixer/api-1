@@ -14,7 +14,6 @@ func main() {
 	// V1 of the API.
 	v1 := router.Group("")
 	v1.Use(common.RequestID)
-	v1.Use(common.BasicAuthRequired)
 
 	// Register Elasticsearch builds resource handlers.
 	usersRouter := v1.Group("/users")
@@ -25,6 +24,9 @@ func main() {
 	// Register Elasticsearch builds resource handlers.
 	esBuildsRouter := v1.Group("/elasticsearch/builds")
 	{
+		// Protect these resources with basic auth.
+		esBuildsRouter.Use(common.BasicAuthRequired)
+
 		esBuildsRouter.GET("/", elasticsearch.GetElasticsearchBuilds)
 		esBuildsRouter.POST("/", common.ValidateInboundJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
 		esBuildsRouter.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
