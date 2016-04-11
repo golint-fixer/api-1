@@ -2,7 +2,9 @@ package common
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
@@ -12,8 +14,8 @@ import (
 // Validator - the application wide struct validator. Uses struct tag "validate" for validation.
 var Validator = validator.New(&validator.Config{TagName: "validate"})
 
-// ValidateInboundJSON validate any inbound JSON against the given model pointer.
-func ValidateInboundJSON(model ModelInterface) gin.HandlerFunc {
+// BindJSON - unmarshal & validate inbound JSON against the given serializer.
+func BindJSON(model interface{}) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		// Unmarshall inbound JSON dynamically to avoid unclear type errors.
 		rawUnmarshal, err := ensureJSONProvidedElseError(context)
@@ -33,7 +35,7 @@ func ValidateInboundJSON(model ModelInterface) gin.HandlerFunc {
 		// Validate the populated model.
 		if err := Validator.Struct(model); err != nil {
 			errs, _ := err.(validator.ValidationErrors)
-			model.HandleValidationErrors(context, errs) // FIXME(TheDodd): this interface seems redundant.
+			serializeValidationErrors(context, model, errs)
 			context.Abort()
 			return
 		}
@@ -46,7 +48,7 @@ func ValidateInboundJSON(model ModelInterface) gin.HandlerFunc {
 	}
 }
 
-func getDecoder(model ModelInterface) *mapstructure.Decoder {
+func getDecoder(model interface{}) *mapstructure.Decoder {
 	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		TagName: "json",
 		Result:  model,
@@ -94,6 +96,27 @@ func serializeDecodeErrors(context *gin.Context, err error) {
 			"error":   "Error encountered during decode process.",
 			"message": err.Error(),
 		})
+	}
+
+	context.JSON(http.StatusBadRequest, gin.H{"errors": collector, "numErrors": numErrors})
+}
+
+func serializeValidationErrors(context *gin.Context, model interface{}, errors validator.ValidationErrors) {
+	// TODO(TheDodd): look into defining an explicit mapping for each validator.V8 validator error.
+	numErrors := len(errors)
+	collector := make([]map[string]string, 0, numErrors)
+	reflectTypeElem := reflect.TypeOf(model).Elem()
+	for _, fieldError := range errors {
+		reflectField, _ := reflectTypeElem.FieldByName(fieldError.Field)
+		jsonFieldName := reflectField.Tag.Get("json")
+		validators := reflectField.Tag.Get("validate")
+		err := map[string]string{
+			"field":      jsonFieldName,
+			"error":      "Error encountered during validation.",
+			"message":    fmt.Sprintf("Validation failed for validator '%s'.", fieldError.Tag),
+			"validators": validators,
+		}
+		collector = append(collector, err)
 	}
 
 	context.JSON(http.StatusBadRequest, gin.H{"errors": collector, "numErrors": numErrors})

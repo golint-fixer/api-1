@@ -17,15 +17,15 @@ func main() {
 	v1.Use(common.RequestID)
 
 	// Register Elasticsearch builds resource handlers.
-	usersRouter := v1.Group("")
-	usersRouter.POST("/users/", common.ValidateInboundJSON(&users.User{}), users.CreateUser)
+	usersRouter := v1.Group("/users")
+	usersRouter.POST("/", common.BindJSON(&users.User{}), users.CreateUser)
+	usersRouter.POST("/:username/verify", common.BindJSON(&users.VerificationBody{}), users.VerifyUser)
 
 	// Register Elasticsearch builds resource handlers.
-	// Protect these resources with basic auth.
 	esBuildsRouter := v1.Group("/elasticsearch/builds")
-	esBuildsRouter.Use(common.BasicAuthRequired)
+	esBuildsRouter.Use(common.BasicAuthRequired) // Protect these resources with basic auth.
 	esBuildsRouter.GET("/", elasticsearch.GetElasticsearchBuilds)
-	esBuildsRouter.POST("/", common.ValidateInboundJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
+	esBuildsRouter.POST("/", common.BindJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
 	esBuildsRouter.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
 
 	// Fire this bad boy up.

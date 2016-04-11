@@ -1,11 +1,8 @@
 package elasticsearch
 
 import (
-	"net/http"
 	"sync"
 
-	"github.com/gin-gonic/gin"
-	"gopkg.in/go-playground/validator.v8"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
@@ -40,10 +37,4 @@ func (model *BuildModel) EnsureIndices() {
 		model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numDataNodes"}})
 		model.Collection().EnsureIndex(mgo.Index{Background: true, Key: []string{"numMasterNodes"}})
 	})
-}
-
-// HandleValidationErrors - handle validation errors related to this model.
-func (model *BuildModel) HandleValidationErrors(context *gin.Context, errors validator.ValidationErrors) {
-	errCollector := common.SerializeValidationErrors(model, errors)
-	context.JSON(http.StatusBadRequest, gin.H{"errors": errCollector, "numErrors": len(errors)})
 }
