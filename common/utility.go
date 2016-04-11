@@ -1,6 +1,11 @@
 package common
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"errors"
+
+	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/mgo.v2/bson"
+)
 
 // Hash returns a hash of the given plain text.
 func Hash(plainText string) string {
@@ -17,4 +22,15 @@ func CheckHash(hash, plainText string) bool {
 		return false
 	}
 	return true
+}
+
+// GetObjectID get an ObjectId from the given string, or error.
+func GetObjectID(id string) (oid bson.ObjectId, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = errors.New("Invalid ObjectId.")
+		}
+	}()
+	oid = bson.ObjectIdHex(id)
+	return oid, err
 }

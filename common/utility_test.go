@@ -3,6 +3,8 @@ package common
 import (
 	"testing"
 
+	"gopkg.in/mgo.v2/bson"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,6 +43,31 @@ func TestCheckHashReturnsFalseWhenFalse(t *testing.T) {
 	output := CheckHash(hash, plainText) // Should be false.
 
 	if output != false {
+		t.Fail()
+	}
+}
+
+////////////////////////////
+// Tests for GetObjectID. //
+////////////////////////////
+func TestGetObjectIDReturnsExpectedObjectID(t *testing.T) {
+	oid := bson.NewObjectId().Hex()
+
+	output, err := GetObjectID(oid)
+
+	if err != nil || output.Hex() != oid {
+		t.Error("Bad output")
+		t.Fail()
+	}
+}
+
+func TestGetObjectIDReturnsErrorForInvalidObjectID(t *testing.T) {
+	oid := "invalidOID"
+
+	_, err := GetObjectID(oid)
+
+	if err == nil || err.Error() != "Invalid ObjectId." {
+		t.Error("Bad output")
 		t.Fail()
 	}
 }

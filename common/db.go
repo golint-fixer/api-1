@@ -2,44 +2,19 @@ package common
 
 import (
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"net"
 	"sync"
 	"time"
 
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
-
-// DB access concurrency control symbols.
-var apiSession *mgo.Session
-var dbSync sync.Once
 
 // GetDatabase get a handle to this API's MongoDB database.
 func GetDatabase() *mgo.Database {
 	config := GetConfig()
-	session := GetSession()
+	session := getSession()
 	return session.DB(config.BackendDBName)
-}
-
-// GetObjectID get an ObjectId from the given string, or error.
-func GetObjectID(id string) (oid bson.ObjectId, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			err = errors.New("Invalid ObjectId.")
-		}
-	}()
-	oid = bson.ObjectIdHex(id)
-	return oid, err
-}
-
-// GetSession get this API's current MongoDB session.
-func GetSession() *mgo.Session {
-	dbSync.Do(func() {
-		apiSession = dialSession()
-	})
-	return apiSession
 }
 
 // SerializeDBErrors serialize the given *mgo.LastError as a reasonable API response.
@@ -61,6 +36,16 @@ func SerializeDBErrors(err *mgo.LastError) (abortCode int, dbError map[string]in
 //////////////////////
 // Private symbols. //
 //////////////////////
+var apiSession *mgo.Session
+var sessionSync sync.Once
+
+func getSession() *mgo.Session {
+	sessionSync.Do(func() {
+		apiSession = dialSession()
+	})
+	return apiSession
+}
+
 func dialSession() *mgo.Session {
 	config := GetConfig()
 	var session *mgo.Session
