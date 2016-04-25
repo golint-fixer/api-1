@@ -1,0 +1,7 @@
+development {
+    cpus = 4
+    disk = 15000
+    driver = "virtualbox"
+    machineName = "api"
+    ram = 3000
+}
