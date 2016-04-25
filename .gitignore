@@ -2,5 +2,6 @@
 buildAPI # Go builds this package by this name.
 
 # Directory ignores.
+.otto
 vendor
 build
