@@ -1,21 +1,25 @@
-FROM golang:1.6.0-alpine
+# FROM golang:1.6.2-wheezy
+FROM golang:1.6.2-alpine
 
 MAINTAINER dodd.anthonyjosiah@gmail.com
 
 EXPOSE 3000
-ENV GO15VENDOREXPERIMENT=1
 
-# Ensure glide is in place for dependency management.
-RUN apk update && apk add git
-RUN go get github.com/Masterminds/glide
+# Ensure godep is in place for dependency management.
+RUN apk add --update git wget tar
 RUN go get github.com/codegangsta/gin
+RUN go get github.com/tools/godep
 
-# Copy over needed files. Filter with .dockerignore.
+# Copy over needed files.
 WORKDIR /go/src/github.com/thedodd/api
-COPY . .
+COPY main.go main.go
+COPY common common
+COPY elasticsearch elasticsearch
+COPY users users
+COPY Godeps Godeps
 
 # Build our API.
-RUN glide install && go install .
+RUN godep get && go install .
 
 # Use a CMD here, instead of ENTRYPOINT, for easy overwrite in docker ecosystem.
 CMD api

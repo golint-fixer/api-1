@@ -26,6 +26,13 @@ func BasicAuthRequired(context *gin.Context) {
 	context.Next()
 }
 
+// JSONOnlyAPI set accept & content-type headers to force this API to be JSON only.
+func JSONOnlyAPI(context *gin.Context) {
+	context.Header("Accept", "application/json")
+	context.Header("Content-Type", "application/json")
+	context.Next()
+}
+
 // RequestID tag the current request with an ID & add a response X-Request-Id header.
 func RequestID(context *gin.Context) {
 	// Generate an ID for this request.

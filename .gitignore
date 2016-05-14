@@ -1,5 +1,5 @@
 # File ignores.
-buildAPI # Go builds this package by this name.
+api # Go builds this package by this name.
 
 # Directory ignores.
 vendor

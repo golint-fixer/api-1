@@ -10,24 +10,15 @@ import (
 )
 
 func main() {
-	router := gin.Default()
+	api := gin.Default()
+	api.Use(common.JSONOnlyAPI)
 
 	// V1 of the API.
-	v1 := router.Group("")
+	v1 := api.Group("")
 	v1.Use(common.RequestID)
-
-	// Register Elasticsearch builds resource handlers.
-	usersRouter := v1.Group("/users")
-	usersRouter.POST("/", common.BindJSON(&users.User{}), users.CreateUser)
-	usersRouter.POST("/:username/verify", common.BindJSON(&users.VerificationBody{}), users.VerifyUser)
-
-	// Register Elasticsearch builds resource handlers.
-	esBuildsRouter := v1.Group("/elasticsearch/builds")
-	esBuildsRouter.Use(common.BasicAuthRequired) // Protect these resources with basic auth.
-	esBuildsRouter.GET("/", elasticsearch.GetElasticsearchBuilds)
-	esBuildsRouter.POST("/", common.BindJSON(&elasticsearch.BuildModel{}), elasticsearch.CreateElasticsearchBuild)
-	esBuildsRouter.GET("/:id", elasticsearch.GetElasticsearchBuildByID)
+	users.BindRoutes(v1, "/users/")
+	elasticsearch.BindRoutes(v1, "/elasticsearch/")
 
 	// Fire this bad boy up.
-	router.Run("0.0.0.0:3000")
+	api.Run("0.0.0.0:3000")
 }
